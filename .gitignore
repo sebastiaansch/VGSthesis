@@ -16,4 +16,5 @@ notebooks/phonemes49words
 notebooks/test
 notebooks/testwords
 Results_isolated_word_recognition/phonemedata.csv
-Results_isolated_word_recognition/flickr_output.h5
+Results_isolated_word_recognition/flickr_output.csv
+Generating_TTS_Flickrwords/TTSproject-82632c0ccf87.json
