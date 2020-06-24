@@ -4,6 +4,7 @@ import tables
 import argparse
 import torch
 import sys
+import numpy as np
 import json
 
 sys.path.append('/Users/sebastiaanscholten/Documents/speech2image-master/PyTorch/functions')
@@ -23,9 +24,9 @@ from data_split import split_data_flickr
 parser = argparse.ArgumentParser(description='Create and run an articulatory feature classification DNN')
 
 # args concerning file location
-parser.add_argument('-data_loc', type = str, default = '/Users/sebastiaanscholten/Documents/speech2image-master/vgsexperiments/experiments/Generating_Flickrwords_mfcc/mfcc/objects_49words_mfcc_features.h5')
+parser.add_argument('-data_loc', type = str, default = '/Users/sebastiaanscholten/Documents/speech2image-master/vgsexperiments/experiments/Generating_Flickrwords_mfcc/mfcc/objects_49words_mfcc_features_copy.h5')
 
-parser.add_argument('-flickr_loc', type = str, default = '/Users/sebastiaanscholten/Documents/speech2image-master/preprocessing/prep_data/flickr_features_27jan_working_8000.h5',
+parser.add_argument('-flickr_loc', type = str, default = '/Users/sebastiaanscholten/Documents/speech2image-master/preprocessing/prep_data/flickr_features_27jan_working_8000_copy.h5',
                     help = 'location of the Flickr feature file, default: /prep_data/flickr_features.h5')
 
 parser.add_argument('-split_loc', type=str,
@@ -134,18 +135,22 @@ for img, cap in zip(img_models, caption_models):
     # calculate the recall@n
     trainer.set_epoch(epoch)
 
-    resultsat10, whichimages = trainer.word_precision_at_n(mfcc_test, images_test, jsonpath, 10, args.batch_size)
+    resultsat10, whichimages, wordembeddings = trainer.word_precision_at_n(mfcc_test, images_test, jsonpath, 10, args.batch_size)
 
     wordlist = []
     for idx,result in enumerate(resultsat10):
         wordlist.append(mfcc_test[idx]._v_name)
-        print("For word: ", mfcc_test[idx]._v_name.replace('flickr_', ''), "we retrieved: ", result, "\n")
+        # print("For word: ", mfcc_test[idx]._v_name.replace('flickr_', ''), "we retrieved: ", result, "\n")
         imagefilenames = []
         for res in whichimages[idx]:
             imagefilenames.append(images_test[res]._v_name.replace('flickr_', '')+".jpg")
         whichimages[idx] = imagefilenames
     resultsdf = pd.DataFrame(list(zip(wordlist, resultsat10, whichimages)),columns = ["Tested","Results","Files"])
     resultsdf.to_csv("results_forcedalignment_49words.csv",index=False)
+
+    np.set_printoptions(threshold=sys.maxsize)
+    wordembeddings.to_csv("files_with_wordembeddings_final.csv", index=False)
+
 
 
 

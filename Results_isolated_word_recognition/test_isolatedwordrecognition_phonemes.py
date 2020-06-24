@@ -23,7 +23,7 @@ from data_split import split_data_flickr
 parser = argparse.ArgumentParser(description='Create and run an articulatory feature classification DNN')
 
 # args concerning file location
-parser.add_argument('-data_loc', type = str, default = '/Users/sebastiaanscholten/Documents/speech2image-master/vgsexperiments/experiments/Generating_Flickrwords_mfcc/mfcc/objects_phonemes49words_mfcc_features.h5')
+parser.add_argument('-data_loc', type = str, default = '/Users/sebastiaanscholten/Documents/speech2image-master/vgsexperiments/experiments/Generating_Flickrwords_mfcc/mfcc/objects_phonemes49words_reverse_mfcc_features.h5')
 
 parser.add_argument('-flickr_loc', type = str, default = '/Users/sebastiaanscholten/Documents/speech2image-master/preprocessing/prep_data/flickr_features_27jan_working_8000.h5',
                     help = 'location of the Flickr feature file, default: /prep_data/flickr_features.h5')
@@ -145,7 +145,7 @@ for img, cap in zip(img_models, caption_models):
             imagefilenames.append(images_test[res]._v_name.replace('flickr_', '')+".jpg")
         whichimages[idx] = imagefilenames
     resultsdf = pd.DataFrame(list(zip(wordlist, resultsat10, whichimages)),columns = ["Tested","Results","Files"])
-    resultsdf.to_csv("results_forcedalignment_phonemes49words.csv",index=False)
+    resultsdf.to_csv("results_forcedalignment_phonemes49words_reverse.csv",index=False)
 
 
 

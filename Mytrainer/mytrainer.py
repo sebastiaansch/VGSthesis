@@ -1,11 +1,14 @@
 import sys
 
+import pandas as pd
+
 sys.path.append('/Users/sebastiaanscholten/Documents/speech2image-master/PyTorch/functions')
 from trainer import flickr_trainer
 from evaluate import evaluate
 from minibatchers import iterate_audio
 import numpy as np
 import json
+import tables
 
 
 import torch
@@ -28,8 +31,32 @@ class evaluating(evaluate):
             sorted, indices = sim.sort(descending = True)
             results.append(indices[0:n])
         return results
+    def return_word_embeddings(self,speechdata):
+        embeddings_1 = self.caption_embeddings
+        wordembeddings = pd.DataFrame()
+        # data_file = tables.open_file("embeddingstest.h5", mode='a')
+        # append_name = 'flickr_'
+
+        # for x, emb in zip(speechdata,embeddings_1):
+        #
+        #     # one group for each image file which will contain its vgg16 features and audio captions
+        #     node = data_file.create_group("/", x._v_name)
+        #     embeddingnode = data_file.create_group(node, "embedding")
+        #     emb = np.array(emb)
+        #     shape = emb.shape[-1]
+        #     embedding = data_file.create_earray(embeddingnode, 'emb', tables.Float32Atom(),obj=np.array())
+        #     embedding.append(emb)
+        # data_file.close()
+        # node_list = data_file.root._f_list_nodes()
+        #
+
+        for ex, emb in zip(speechdata,embeddings_1):
+            embfile = ex._v_name
+            emb = np.array(emb).astype('float64')
+            wordembeddings = wordembeddings.append({"File": embfile,"Embedding":emb},ignore_index=True)
 
 
+        return wordembeddings
 
 
 
@@ -89,7 +116,11 @@ class personaltrainer(flickr_trainer):
 
         self.evaluator.sep_embed_data(speechiterator,imageiterator)
         results = self.evaluator.results_at_n(n)
-        return check_word_occurence(speechdata,imgdata,results,path)
+        self.evaluator.return_word_embeddings(speechdata)
+        returnedcorrectly, results = check_word_occurence(speechdata,imgdata,results,path)
+        wordembeddings = self.evaluator.return_word_embeddings(speechdata)
+
+        return returnedcorrectly, results, wordembeddings
     def word_precision_at_n_phonemes(self, speechdata, imgdata, path, n, batch_size):
         speechiterator = self.audiobatcher(speechdata, 5,shuffle=False)
         imageiterator = self.imagebatcher(imgdata, 5, shuffle=False)
@@ -127,7 +158,11 @@ def only_iterate_audio(f_nodes, batchsize, audio, shuffle=True):
         # reshape the features and recast as float64
         speech = np.float64(speech)
         # truncate all padding to the length of the longest utterance
-        speech = speech[:, :, :max_length]
+        if max_length < 7:
+            speech = speech[:, :, :6]
+        else:
+            speech = speech[:, :, :max_length]
+
         # reshape the features into appropriate shape and recast as float32
         speech = np.float64(speech)
         yield speech, lengths

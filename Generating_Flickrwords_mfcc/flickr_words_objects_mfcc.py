@@ -19,8 +19,8 @@ import wave
 from pathlib import Path
 import tables
 
-audio_path = os.path.join('/Users/sebastiaanscholten/Documents/speech2image-master/vgsexperiments/experiments/notebooks/phonemes49words')
-data_loc = os.path.join('mfcc/objects_phonemes49words_mfcc_features.h5')
+audio_path = os.path.join('/Users/sebastiaanscholten/Documents/speech2image-master/vgsexperiments/experiments/notebooks/phonemesreverse49words')
+data_loc = os.path.join('mfcc/objects_phonemes49words_reverse_mfcc_features.h5')
 speech = ['mfcc']
 
 audio = os.listdir(audio_path)

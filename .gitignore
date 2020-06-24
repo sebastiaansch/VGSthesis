@@ -1,3 +1,8 @@
+priming/Archive
+priming/Archive.zip
+priming/features
+priming/lots
+Results_isolated_word_recognition/embeddingstest.h5
 data/fragmenten_samen
 data/models/
 data/labels/
@@ -16,4 +21,11 @@ notebooks/phonemes49words
 notebooks/test
 notebooks/testwords
 Results_isolated_word_recognition/phonemedata.csv
-Results_isolated_word_recognition/flickr_output.csw
+Results_isolated_word_recognition/flickr_output.csv
+Results_isolated_word_recognition/wordembeddings
+data/flickr_features_resnetnormal_final.h5
+notebooks/49words_primes/
+notebooks/49words_targets/
+notebooks/Archive.zip
+notebooks/phonemesreverse49words/
+notebooks/phonemestesttest49words/
